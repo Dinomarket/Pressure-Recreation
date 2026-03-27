@@ -55,3 +55,8 @@ class Enemy(object):
         surface.blit(self.image, (self.hitbox.x, self.hitbox.y))
         
 
+class Angler(object):
+    def __init__(self):
+        pass
+
+    
