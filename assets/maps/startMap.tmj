@@ -1,12 +1,4 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "format":"json",
-         "target":"startMap.tmj"
-        }
-    },
  "height":24,
  "infinite":false,
  "layers":[
@@ -37,6 +29,7 @@
             1657, 1658, 1659, 1660, 1661, 1662, 1663, 1664, 1665, 1666, 1667, 1668, 1669, 1670, 1671, 1672, 1673, 1674, 1675, 1676, 1677, 1678, 1679, 1680, 1681, 1682, 1683, 1684, 1685, 1686, 1687, 1688, 1689, 1690, 1691, 1692],
          "height":24,
          "id":1,
+         "locked":true,
          "name":"Background",
          "offsetx":-1.33333333333326,
          "offsety":0,
@@ -46,9 +39,97 @@
          "width":36,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":6,
+         "name":"collision",
+         "objects":[
+                {
+                 "height":78.8513388734996,
+                 "id":10,
+                 "name":"wall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":383.601108033241,
+                 "x":9.59002770083103,
+                 "y":252.537396121884
+                }, 
+                {
+                 "height":78.8513,
+                 "id":13,
+                 "name":"wall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":370.814434903047,
+                 "x":757.079393813481,
+                 "y":251.471856925208
+                }, 
+                {
+                 "height":126.801438504155,
+                 "id":14,
+                 "name":"wall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":424.092366574331,
+                 "x":356.429347645429,
+                 "y":125.735938180979
+                }, 
+                {
+                 "height":419.830062696214,
+                 "id":16,
+                 "name":"wall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":33.0323481071099,
+                 "x":9.05723314866114,
+                 "y":314.339816297322
+                }, 
+                {
+                 "height":419.83,
+                 "id":17,
+                 "name":"wall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":33.0323,
+                 "x":1103.38597373038,
+                 "y":313.274289012004
+                }, 
+                {
+                 "height":31.9666574330563,
+                 "id":18,
+                 "name":"wall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1116.70543019391,
+                 "x":23.9750780701754,
+                 "y":732.038831948292
+                }, 
+                {
+                 "height":128.932594644506,
+                 "id":19,
+                 "name":"mainDoor",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":363.355493998153,
+                 "x":394.256694367498,
+                 "y":252.537396121884
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":1,
+ "nextlayerid":7,
+ "nextobjectid":20,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

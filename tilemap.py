@@ -11,10 +11,6 @@ class TileMap:
         with open(tmj_file) as f:
             self.map_data = json.load(f)
 
-        self.tile_size = self.map_data["tilewidth"]
-        self.width = self.map_data["width"]
-        self.height = self.map_data["height"]
-
         # -----------------------------
         # Load all tilesets
         # -----------------------------
@@ -41,6 +37,33 @@ class TileMap:
         # Store layers
         # -----------------------------
         self.layers = self.map_data["layers"]
+        self.walls = []
+        self.grass = []
+        self.doors = []
+
+        for layer in self.layers:
+            if layer["type"] == "objectgroup":
+                for obj in layer["objects"]:
+                    rect = pygame.Rect(
+                        obj["x"],
+                        obj["y"],
+                        obj["width"],
+                        obj["height"]
+                    )
+
+                    obj_type = obj.get("type", "")
+
+                    if obj_type == "wall":
+                        self.walls.append(rect)
+                    elif obj_type == "grass":
+                        self.grass.append(rect)
+                    elif obj_type == "mainDoor":
+                        self.doors.append(rect)
+                    
+        self.tile_size = self.map_data["tilewidth"]
+        self.width = self.map_data["width"]
+        self.height = self.map_data["height"]
+
 
     # -----------------------------
     # Get the correct tile surface for a gid
@@ -89,20 +112,22 @@ class TileMap:
                     tile = self.get_tile(gid)
                     if tile:
                         screen.blit(tile, (x*self.tile_size, y*self.tile_size))
+        for wall in self.walls:
+            pygame.draw.rect(screen, (255, 0, 0), wall, 2)
+
+
 
     # -----------------------------
     # Check collision for a position
     # -----------------------------
-    def is_blocked(self, px, py):
-        gx = px // self.tile_size
-        gy = py // self.tile_size
-
-        if gx < 0 or gy < 0 or gx >= self.width or gy >= self.height:
-            return True
-
-        for layer in self.layers:
-            if layer["name"].lower() == "collision":
-                index = gy * self.width + gx
-                return layer["data"][index] != 0
-
+    def is_blocked(self, rect):
+        for wall in self.walls:
+            if rect.colliderect(wall):
+                return True
+        return False
+    
+    def check_doors(self, rect):
+        for door in self.doors:
+            if rect.colliderect(door):
+                return True
         return False

@@ -6,6 +6,7 @@ import math
 from player import Player
 from opponent import Enemy
 from tilemap import TileMap
+from opponent import Angler
 
 #Colors & Fonts
 BLACK   = (0, 0, 0)
@@ -37,6 +38,7 @@ screen = pygame.display.set_mode((1152, 768))
 
 player = Player() # create an instance
 enemy = Enemy()
+angler = Angler()
 clock = pygame.time.Clock()
 world = TileMap(os.path.join("assets", "maps", "startMap.tmj"))
 
@@ -120,14 +122,19 @@ def game(player,enemy,world,clock):
          
 
         player.handle_keys() # handle the keys
-        
+        angler.rushPath()
         
         # fill the screen with white
         #enemy.move_towards_player(player=player)
-        if enemy.check_collision(player= player) == True:
+        if angler.check_collision(player= player):
             print("ur dead gng")
             return "dead"
+        if world.is_blocked(player.hitbox):
+            print("You are hitting a wall!")
+        print(world.walls)
+        print(world.doors)
         player.draw(cameraSurface)
+        angler.draw(cameraSurface)
         #enemy.draw(screen)
 
         for event in pygame.event.get():

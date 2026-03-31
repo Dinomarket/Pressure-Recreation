@@ -57,6 +57,21 @@ class Enemy(object):
 
 class Angler(object):
     def __init__(self):
-        pass
+        self.x = 1
+        self.y = 250
+        self.speed = 100
+        self.hitbox = pygame.Rect(self.x, self.y, 200, 200)
 
-    
+    def rushPath(self):
+        self.hitbox.x += self.speed
+
+    def check_collision(self,player):
+        if self.hitbox.colliderect(player.hitbox):
+            print("Why yall touching???")
+            dead = True
+            return dead
+
+    def draw(self, surface):
+        """ Draw on surface """
+        # blit opponent at your current position
+        pygame.draw.rect(surface,(255, 255, 0) , self.hitbox)
