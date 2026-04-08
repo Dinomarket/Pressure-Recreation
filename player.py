@@ -2,7 +2,6 @@ import os
 import pygame
 
 
-print("Hello world")
 img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','player.png')
 
 class Player(object): 
@@ -13,7 +12,7 @@ class Player(object):
         self.x = 500
         self.y = 500
         self.hitbox = pygame.Rect(self.x, self.y, 125, 125)
-        print("yo")
+        
     def handle_keys(self, dist = 12):
         """ Handles Keys """
         key = pygame.key.get_pressed()

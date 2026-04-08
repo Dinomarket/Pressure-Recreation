@@ -2,6 +2,9 @@ import os
 import pygame
 import json
 import xml.etree.ElementTree as ET
+from pytmx.util_pygame import load_pygame
+import sys
+
 
 class TileMap:
     def __init__(self, tmj_file):
@@ -131,3 +134,33 @@ class TileMap:
             if rect.colliderect(door):
                 return True
         return False
+    
+class tiles():
+    def __init__(self):
+        self.mapData = load_pygame(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps','startMap.tmx'))
+        
+        print(dir(self.mapData))
+"""
+class Tile(pygame.sprite.Sprite):
+	def __init__(self,pos,surf,groups):
+		super().__init__(groups)
+		self.image = surf
+		self.rect = self.image.get_rect(topleft = pos)
+
+# cycle through all layers
+for layer in tmx_data.visible_layers:
+	# if layer.name in ('Floor', 'Plants and rocks', 'Pipes')
+	if hasattr(layer,'data'):
+		for x,y,surf in layer.tiles():
+			pos = (x * 128, y * 128)
+			Tile(pos = pos, surf = surf, groups = sprite_group)
+
+for obj in tmx_data.objects:
+	pos = obj.x,obj.y
+	if obj.type in ('Building', 'Vegetation'):
+		Tile(pos = pos, surf = obj.image, groups = sprite_group)
+"""
+	
+class locker:
+    def __init__(self):
+        self.hitbox = pygame.Rect()

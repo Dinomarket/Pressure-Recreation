@@ -3,12 +3,18 @@ import os
 import pygame
 import random
 import math
+
+pygame.init()
+global screen
+screen = pygame.display.set_mode((1152, 768))
+
 from player import Player
 from opponent import Enemy
 from tilemap import TileMap
 from opponent import Angler
 
-#Colors & Fonts
+
+#Colors & Fonts 
 BLACK   = (0, 0, 0)
 WHITE   = (255, 255, 255)
 RED     = (255, 0, 0)
@@ -32,9 +38,8 @@ ORANGE = (255, 165, 0)
 
 
 
-pygame.init()
-global screen
-screen = pygame.display.set_mode((1152, 768))
+
+
 
 player = Player() # create an instance
 enemy = Enemy()
@@ -75,6 +80,7 @@ def cameraShake(start_time, duration=4000, magnitude=16):
 
     return True, offset_x, offset_y
 
+
 def flashLights(currentTime):
     global lastFlash, flashOn, flashStart, lightsOn
 
@@ -98,7 +104,32 @@ def flashLights(currentTime):
             print("im flashin")
             transparentSurface.fill((0,0,0,128))
             screen.blit(transparentSurface,(0,0))     
-        
+
+def sanityBar(sanityPoints, outline_color = BLACK):
+    sanityCap = 100
+    filledRatio = sanityPoints/sanityCap
+    #add a overlay for higher sanitypoints
+    #lockers should slowly increase sanity
+    #once its maxed, kick em out
+    if filledRatio < 0.25:
+        color = YELLOW
+    elif filledRatio < 0.65:
+        color = ORANGE
+    else:
+        color = RED
+
+    pygame.draw.rect(screen, outline_color, (945,585, 45,160))
+    outerRect = pygame.Rect((950,600 - 10, 35, 150))
+    pygame.draw.rect(screen, outline_color, outerRect)
+    filledRect = pygame.Rect((950, 600 - 10, 35, filledRatio * 150))
+    filledRect.bottomleft = outerRect.bottomleft
+    pygame.draw.rect(screen, color, filledRect)
+
+    
+
+    
+
+
 
 def game(player,enemy,world,clock):
     global flashOn,lightsOn
@@ -119,7 +150,7 @@ def game(player,enemy,world,clock):
         
         world.draw(cameraSurface)
 
-         
+        
 
         player.handle_keys() # handle the keys
         angler.rushPath()
@@ -131,8 +162,7 @@ def game(player,enemy,world,clock):
             return "dead"
         if world.is_blocked(player.hitbox):
             print("You are hitting a wall!")
-        print(world.walls)
-        print(world.doors)
+  
         player.draw(cameraSurface)
         angler.draw(cameraSurface)
         #enemy.draw(screen)
@@ -156,7 +186,7 @@ def game(player,enemy,world,clock):
                     
         shaking, offset_x , offset_y = checkShake(shaking, shake_start)
         screen.blit(cameraSurface, (0 + offset_x ,0 + offset_y))
-        
+        #sanityBar(10)
         flashLights(now)
 
         pygame.display.update() # update the screen
