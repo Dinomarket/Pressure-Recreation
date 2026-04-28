@@ -11,26 +11,47 @@ class Player(object):
         self.image = pygame.transform.scale(self.image, (125, 125))
         self.x = 500
         self.y = 500
+        self.oldY = self.y
+        self.oldX = self.x
         self.hitbox = pygame.Rect(self.x, self.y, 125, 125)
+        self.visible = True
         
     def handle_keys(self, dist = 12):
         """ Handles Keys """
-        key = pygame.key.get_pressed()
-         # distance moved in 5 frames
-        if key[pygame.K_a]:
-            self.x -= dist
-        if key[pygame.K_d]:
-            self.x += dist
-        if key[pygame.K_w]:
-            self.y -= dist
-        if key[pygame.K_s]:
-            self.y += dist
-        if key[pygame.K_e]:
-            print("you pressed e!")
+        if self.visible == True:
+            key = pygame.key.get_pressed()
+            self.oldY = self.y
+            self.oldX = self.x
+            # distance moved in 5 frames
+            if key[pygame.K_a]:
+                self.x -= dist
+            if key[pygame.K_d]:
+                self.x += dist
+            if key[pygame.K_w]:
+                self.y -= dist
+            if key[pygame.K_s]:
+                self.y += dist
+            if key[pygame.K_e]:
+                print("you pressed e!")
 
+            self.hitbox.x = self.x
+            self.hitbox.y = self.y
+
+    
+    def hide(self):
+        self.visible = False
+        self.x = 10000
+        self.y = 10000
         self.hitbox.x = self.x
         self.hitbox.y = self.y
-            
+
+    def leaveLocker(self):
+        self.visible = True
+        self.x = self.oldX
+        self.y = self.oldY
+        self.hitbox.x = self.x
+        self.hitbox.y = self.y
+
 
 
     def dash(self, previous_key):

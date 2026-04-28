@@ -11,6 +11,7 @@ screen = pygame.display.set_mode((1152, 768))
 from player import Player
 from opponent import Enemy
 from tilemap import TileMap
+from tilemap import tiles
 from opponent import Angler
 
 
@@ -40,13 +41,14 @@ ORANGE = (255, 165, 0)
 
 
 
-
+#xTile = tiles()
 player = Player() # create an instance
 enemy = Enemy()
 angler = Angler()
 clock = pygame.time.Clock()
-world = TileMap(os.path.join("assets", "maps", "startMap.tmj"))
-
+#world = TileMap(os.path.join("assets", "maps", "startMap.tmj"))
+world = tiles()
+#print("tile layers:",xTile.mapData.visible_layers)
 
 transparentSurface = pygame.Surface((1152, 768), pygame.SRCALPHA)
 
@@ -56,7 +58,7 @@ flashInterval = random.randint(120,150)
 flashDuration = 2000
 lastFlash = 0
 flashStart = lastFlash
-
+sanityPoints = 0
 cameraSurface = pygame.Surface((1152,768))
 
 
@@ -83,10 +85,11 @@ def cameraShake(start_time, duration=4000, magnitude=16):
 
 def flashLights(currentTime):
     global lastFlash, flashOn, flashStart, lightsOn
-
+    #add a duration to how long it lasts, and a permeneant value.
     if lightsOn == False:
         print("flashing stuff")
         # stop after duration
+ 
         if currentTime - flashStart > flashDuration:
             lightsOn = True
             flashOn = False
@@ -101,9 +104,11 @@ def flashLights(currentTime):
                 lastFlash = currentTime
 
         if flashOn:
+    
             print("im flashin")
+            screen.blit(transparentSurface,(0,0)) 
             transparentSurface.fill((0,0,0,128))
-            screen.blit(transparentSurface,(0,0))     
+                
 
 def sanityBar(sanityPoints, outline_color = BLACK):
     sanityCap = 100
@@ -125,19 +130,37 @@ def sanityBar(sanityPoints, outline_color = BLACK):
     filledRect.bottomleft = outerRect.bottomleft
     pygame.draw.rect(screen, color, filledRect)
 
+def increaseSanity(sanityPoints):
+    sanityPoints += 5
     
 
-    
+def spawnNode(spawnAngler):
+    if spawnAngler:
+        angler = random.choice("regular","pinky")
+        print("spawning angler")
 
+
+def anglerNode(endTime):
+    global flashOn,lightsOn, flashStart
+    lightsOn = False
+    flashOn = True   # start flashing
+    flashStart = lastFlash
+    print("angler stuff")
+    now = pygame.time.get_ticks()
+    if now - endTime == random.randint(2000,4000):
+        print("Somethings coming")
+        cameraShake()
 
 
 def game(player,enemy,world,clock):
-    global flashOn,lightsOn
+    global flashOn,lightsOn, flashStart
+    global canEnterLocker
     running = True
-    flashOn = True
-    lightsOn = False
+    flashOn = False
+    lightsOn = True
     shake_start = 0
     shaking = False
+    
 
     offset_x = 0
     offset_y = 0
@@ -146,7 +169,7 @@ def game(player,enemy,world,clock):
         
         # handle every event since the last frame
 
-        cameraSurface.fill((255,255,255))
+       
         
         world.draw(cameraSurface)
 
@@ -162,8 +185,16 @@ def game(player,enemy,world,clock):
             return "dead"
         if world.is_blocked(player.hitbox):
             print("You are hitting a wall!")
-  
+            player.x = player.oldX
+            player.y = player.oldY
+        if world.check_for_locker(player.hitbox):
+            print("you can get in this locker")
+            canEnterLocker = True
+        else:
+            canEnterLocker = False
+
         player.draw(cameraSurface)
+        
         angler.draw(cameraSurface)
         #enemy.draw(screen)
 
@@ -175,6 +206,10 @@ def game(player,enemy,world,clock):
                 flashOn = True
                 lightsOn = False
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_e:
+                    if world.check_for_locker(player.hitbox):
+                        print("You can get in this locker!")
+
                 if event.key == pygame.K_SPACE: 
                     print('RUMBLING RUMBLING ITS COMING')
                     shake_start = pygame.time.get_ticks()
@@ -183,12 +218,19 @@ def game(player,enemy,world,clock):
                     print("LIGHTS FLASH")
                     lightsOn = False
                     flashOn = True   # start flashing
-                    
+                    flashStart = lastFlash
+                if event.key == pygame.K_e:
+                    if canEnterLocker:
+                        player.hide()
+                    else:
+                        player.leaveLocker()
+             
         shaking, offset_x , offset_y = checkShake(shaking, shake_start)
+        
         screen.blit(cameraSurface, (0 + offset_x ,0 + offset_y))
-        #sanityBar(10)
-        flashLights(now)
-
+        
+        flashLights(now) 
+        sanityBar(10)
         pygame.display.update() # update the screen
 
         clock.tick(20)
