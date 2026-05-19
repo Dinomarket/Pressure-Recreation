@@ -4,11 +4,12 @@ BLACK   = (0, 0, 0)
 RED     = (255, 0, 0)
 YELLOW  = (255, 255, 0)
 ORANGE = (255, 165, 0)
+GRAY    = (128, 128, 128)
 
 class sanity_bar(object):
     def __init__(self):
         self.points = 0
-        self.outline = (0, 0, 0)
+        self.outline = (128,128,128)
         self.cap = 100
         self.ratio = 100
         self.filled = 0

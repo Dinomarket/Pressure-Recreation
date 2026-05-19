@@ -8,14 +8,15 @@ import os
 enemy_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','enemy.jpg')
 angler_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','angler1.png')
 
-class Enemy(object):
+class Dweller(object):
     def __init__(self):
         self.image = pygame.image.load(enemy_img_path)
         self.x = 1
         self.y = 1
-        self.speed = 5
+        self.speed = 15
         self.hitbox = pygame.Rect(self.x, self.y, 225, 225)
         self.image = pygame.transform.scale(self.image, (75,225))
+        self.alive = False
         
 
     def move_towards_player(self, player):
@@ -40,6 +41,29 @@ class Enemy(object):
             print("Why yall touching???")
             dead = True
             return dead
+        
+        elif not player.visible:
+            self.x = -5000
+            self.y = 0
+            dead = False
+            return dead
+        
+        elif self.hitbox.colliderect(player.view_hitbox):
+            print("He saw me!")
+            self.alive = False
+            self.hitbox.x = 1
+            self.hitbox.y = 10000
+
+            dead = False
+            return dead
+        
+
+
+            
+
+        
+
+    
 
     def draw(self, surface):
         """ Draw on surface """
@@ -56,6 +80,7 @@ class Angler(object):
         self.speed = 50
         self.hitbox = pygame.Rect(self.x, self.y, 200, 200)
         self.image = pygame.transform.scale(self.image, (200, 200))
+        self.active = False
 
     def rushPath(self):
         self.hitbox.x += self.speed
@@ -71,3 +96,5 @@ class Angler(object):
         # blit opponent at your current position
         pygame.draw.rect(surface,(0, 0, 0) , self.hitbox)
         surface.blit(self.image, (self.hitbox.x,self.hitbox.y))
+
+  

@@ -137,8 +137,8 @@ class TileMap:
         return False
     
 class tiles():
-    def __init__(self):
-        self.mapData = load_pygame(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps','startMap.tmx'))
+    def __init__(self,path):
+        self.mapData = load_pygame(path)
         self.walls = []
         self.lockers = []
         self.doors = []
@@ -165,7 +165,7 @@ class tiles():
                         self.lockers.append(rect)
                         print(self.lockers)
 
-    
+
 
     def draw(self, surface):
         for layer in self.mapData.visible_layers:

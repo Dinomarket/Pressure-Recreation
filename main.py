@@ -9,11 +9,11 @@ global screen
 screen = pygame.display.set_mode((1152, 768))
 
 from player import Player
-from opponent import Enemy
-from tilemap import TileMap
+from opponent import Dweller
 from tilemap import tiles
 from opponent import Angler
 from sanityBar import sanity_bar
+from lights import lights
 
 #Colors & Fonts 
 BLACK   = (0, 0, 0)
@@ -42,12 +42,13 @@ ORANGE = (255, 165, 0)
 
 
 #xTile = tiles()
+light = lights()
 player = Player() # create an instance
-enemy = Enemy()
+wallDweller = Dweller()
 angler = Angler()
 clock = pygame.time.Clock()
 #world = TileMap(os.path.join("assets", "maps", "startMap.tmj"))
-world = tiles()
+world = tiles(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps','startMap.tmx'))
 sanity = sanity_bar()
 #print("tile layers:",xTile.mapData.visible_layers)
 
@@ -127,7 +128,7 @@ def spawnNode():
 
 
 def anglerNode(currentTime):
-    global flashOn, lightsOn, flashStart, shaking, triggerTime, shake_start
+    global flashOn, lightsOn, flashStart, triggerTime
 
     lightsOn = False
     flashOn = True
@@ -140,7 +141,11 @@ def anglerNode(currentTime):
     if pygame.time.get_ticks() >= triggerTime:
         print("Something's coming")
         shaking = True
-        shake_start = pygame.time.get_ticks()
+      
+        return shaking
+    else:
+        return False
+
    
 
 
@@ -175,35 +180,50 @@ def game(player,enemy,world,clock):
         angler.rushPath()
         
         # fill the screen with white
-        #enemy.move_towards_player(player=player)
+        if wallDweller.alive == True:
+            wallDweller.move_towards_player(player=player)
+        
+        if wallDweller.check_collision(player=player):
+            print("slimed")
+            return "dead"
+        
         if angler.check_collision(player= player):
             print("ur dead gng")
             return "dead"
-        
+
         if world.is_blocked(player.hitbox):
             print("You are hitting a wall!")
             player.x = player.oldX
             player.y = player.oldY
 
-        if world.check_for_locker(player.hitbox):
+        if world.check_for_locker(player.hitbox) and sanity.points <= 70:
             print("you can get in this locker")
             canEnterLocker = True
         else:
             canEnterLocker = False
+        
+        if world.check_doors(player.hitbox):
+            print("We outta here!")
+            world = tiles(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps','level2TestMap.tmx'))
+            
 
         if anglerSpawn == True:
-            anglerNode(spawnTime)
+            shaking = anglerNode(spawnTime)
 
         if not player.visible:
             sanity.increase(1)
-            
+            if sanity.points == 100:
+                player.leaveLocker()
+
         else: 
             sanity.decrease(0.75)
 
         player.draw(cameraSurface)
         
         angler.draw(cameraSurface)
-        #enemy.draw(screen)
+
+        if wallDweller.alive:
+            wallDweller.draw(cameraSurface)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -267,7 +287,7 @@ def navigation(page):
 
     if page == "main":
         print("Starting screen or main screen idk")
-        page = game(player,enemy,world,clock)
+        page = game(player,wallDweller,world,clock)
     if page == "dead":
         print("LOL ur dead")
         page = dead()
