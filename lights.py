@@ -35,19 +35,12 @@ class lights(object):
 
         else:
 
-            if startTime - self.Start >= flashInterval:
+            if startTime - self.Start >= self.flashInterval:
                 self.flashOn = not self.flashOn
                 self.Start = startTime
         if self.flashOn == True:
-            self.lightsOff(self,screen,surface)
+            self.lightsOff(screen,surface)
         
-
-lightsOn = False
-flashInterval = random.randint(120,150)
-flashDuration = 2000
-lastFlash = 0
-flashStart = lastFlash
-
 
 
 def flashLights(currentTime):
