@@ -16,7 +16,7 @@ class Dweller(object):
         self.speed = 15
         self.hitbox = pygame.Rect(self.x, self.y, 225, 225)
         self.image = pygame.transform.scale(self.image, (75,225))
-        self.alive = False
+        self.alive = True
         
 
     def move_towards_player(self, player):

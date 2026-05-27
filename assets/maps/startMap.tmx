@@ -66,7 +66,7 @@
   <object id="16" name="wall" x="9.05723" y="314.34" width="33.0323" height="419.83"/>
   <object id="17" name="wall" x="1103.39" y="313.274" width="33.0323" height="419.83"/>
   <object id="18" name="wall" x="23.9751" y="732.039" width="1116.71" height="31.9667"/>
-  <object id="19" name="mainDoor" x="394.257" y="252.537" width="363.355" height="128.933"/>
+  <object id="19" name="mainDoor" x="394.257" y="252.537" width="363.355" height="71.933"/>
   <object id="20" name="locker" x="279.156" y="267.34" width="110.776" height="128.501"/>
   <object id="22" name="locker" x="854.455" y="272.51" width="110.776" height="128.501"/>
  </objectgroup>
