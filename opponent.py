@@ -74,11 +74,9 @@ class Dweller(object):
 
 class Angler(object):
     def __init__(self):
-        self.x = 1
-        self.y = 250
         self.image = pygame.image.load(angler_img_path)
         self.speed = 50
-        self.hitbox = pygame.Rect(self.x, self.y, 200, 200)
+        self.hitbox = pygame.Rect(1, 250, 200, 200)
         self.image = pygame.transform.scale(self.image, (200, 200))
         self.active = False
 
@@ -86,7 +84,7 @@ class Angler(object):
         self.hitbox.x += self.speed
 
     def check_collision(self,player):
-        if self.hitbox.colliderect(player.hitbox):
+        if self.hitbox.colliderect(player.hitbox) and self.active == True:
             print("Why yall touching???")
             dead = True
             return dead
@@ -94,7 +92,7 @@ class Angler(object):
     def draw(self, surface):
         """ Draw on surface """
         # blit opponent at your current position
-        pygame.draw.rect(surface,(0, 0, 0) , self.hitbox)
-        surface.blit(self.image, (self.hitbox.x,self.hitbox.y))
+        if self.active == True:
+            pygame.draw.rect(surface,(0, 0, 0) , self.hitbox)
+            surface.blit(self.image, (self.hitbox.x,self.hitbox.y))
 
-  

@@ -213,7 +213,11 @@ def game(player,enemy,world,clock):
                     shake_start = pygame.time.get_ticks()
                     shaking = True
                 if event.key == pygame.K_1:
-                    anglerSpawn, spawnTime = spawnNode()
+                    print("SUMMON ANGLER")
+                    angler.active = True
+                    angler.hitbox.x = 1
+                    angler.hitbox.y = 250
+
                 if event.key == pygame.K_0:
                     print("LIGHTS FLASH")
                     flashStartTime = pygame.time.get_ticks()
@@ -228,7 +232,8 @@ def game(player,enemy,world,clock):
         
         screen.blit(cameraSurface, (0 + offset_x ,0 + offset_y))
         
-        light.flashLights(startTime=flashStartTime, screen= screen, surface= transparentSurface) 
+        #light.flashLights(startTime=flashStartTime, screen= screen, surface= transparentSurface) 
+
         screen.blit(points,(980,25))
         pygame.display.update() # update the screen
 
