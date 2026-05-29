@@ -20,4 +20,5 @@ class overlay(object):
     def __init__(self):
         self.color = RED
 
-  
+    def draw(surface,self):
+        print("WIP")

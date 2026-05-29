@@ -9,11 +9,13 @@ global screen
 screen = pygame.display.set_mode((1152, 768))
 
 from player import Player
+
 from opponent import Dweller
 from tilemap import tiles
 from opponent import Angler
 from sanityBar import sanity_bar
 from lights import lights
+
 
 #Colors & Fonts 
 BLACK   = (0, 0, 0)
@@ -144,7 +146,7 @@ def game(player,enemy,world,clock):
         world.draw(cameraSurface)
         sanity.draw(cameraSurface)
         
-        
+        #print "poopypants"
 
         player.handle_keys() # handle the keys
         angler.rushPath()

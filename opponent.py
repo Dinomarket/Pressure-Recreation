@@ -5,7 +5,7 @@ import os
 
 
 
-enemy_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','enemy.jpg')
+enemy_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','sogger.jpg')
 angler_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','angler1.png')
 
 class Dweller(object):

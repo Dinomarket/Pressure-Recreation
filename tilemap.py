@@ -3,9 +3,14 @@ import pygame
 import os
 import pytmx
 from pytmx.util_pygame import load_pygame
-from mapStorage import maps
 
 
+path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps')
+
+maps = {
+    "general":{"startMap":"startMap.tmx",
+                "room1":"level2testMap.tmx"}
+}
 
 class tiles():
     def __init__(self,path):
