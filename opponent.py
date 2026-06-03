@@ -75,9 +75,9 @@ class Dweller(object):
 class Angler(object):
     def __init__(self):
         self.image = pygame.image.load(angler_img_path)
-        self.speed = 50
-        self.hitbox = pygame.Rect(1, 250, 200, 200)
-        self.image = pygame.transform.scale(self.image, (200, 200))
+        self.speed = 80
+        self.hitbox = pygame.Rect(1, 250, 500, 500)
+        self.image = pygame.transform.scale(self.image, (500, 500))
         self.active = False
 
     def rushPath(self):
@@ -91,8 +91,8 @@ class Angler(object):
 
     def draw(self, surface):
         """ Draw on surface """
-        # blit opponent at your current position
+
         if self.active == True:
-            pygame.draw.rect(surface,(0, 0, 0) , self.hitbox)
+
             surface.blit(self.image, (self.hitbox.x,self.hitbox.y))
 

@@ -78,7 +78,7 @@ class Player(object):
     def draw(self, surface):
         """ Draw on surface """
         # blit yourself at your current position
-        pygame.draw.rect(surface,(0,0,255), self.view_hitbox)
+
         pygame.draw.rect(surface,(255, 0, 0), self.hitbox)
         surface.blit(self.image, (self.hitbox.x, self.hitbox.y))
         

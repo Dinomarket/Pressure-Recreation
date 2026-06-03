@@ -9,12 +9,12 @@ global screen
 screen = pygame.display.set_mode((1152, 768))
 
 from player import Player
-
-from opponent import Dweller
+from dialogue import message
+from opponent import Dweller, Angler
 from tilemap import tiles
-from opponent import Angler
+from overlay import HeartbeatOverlay
 from sanityBar import sanity_bar
-from lights import lights
+from lights import lights, Lights
 
 
 #Colors & Fonts 
@@ -41,17 +41,20 @@ ORANGE = (255, 165, 0)
 
 
 
-
+panick = HeartbeatOverlay()
 
 #xTile = tiles()
+xLight = Lights()
 light = lights()
-player = Player() # create an instance
+# create an instance
 wallDweller = Dweller()
 angler = Angler()
 clock = pygame.time.Clock()
 #world = TileMap(os.path.join("assets", "maps", "startMap.tmj"))
-world = tiles(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps','startMap.tmx'))
+world = tiles(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps','generalHall.tmx'))
 sanity = sanity_bar()
+text = message()
+player = Player() 
 #print("tile layers:",xTile.mapData.visible_layers)
 
 transparentSurface = pygame.Surface((1152, 768), pygame.SRCALPHA)
@@ -168,7 +171,7 @@ def game(player,enemy,world,clock):
             player.x = player.oldX
             player.y = player.oldY
 
-        if world.check_for_locker(player.hitbox) and sanity.points <= 70:
+        if world.check_for_locker(player.hitbox) and sanity.points >= 30:
             print("you can get in this locker")
             canEnterLocker = True
         else:
@@ -178,20 +181,24 @@ def game(player,enemy,world,clock):
             print("We outta here!")
             Score += 1
             points = font.render(f"Score: {Score}",False,WHITE)
-            world = tiles(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps','level2TestMap.tmx'))
-            
+            world = tiles(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps','generalHall.tmx'))
+            player.x = 50
+            player.y = 350  
+            player.hitbox.x = 50
+            player.hitbox.y = 350
             
 
         if anglerSpawn == True:
             shaking = anglerNode(spawnTime)
 
         if not player.visible:
-            sanity.increase(1)
-            if sanity.points == 100:
+            sanity.decrease(1)
+            
+            if sanity.points == 0:
                 player.leaveLocker()
 
         else: 
-            sanity.decrease(0.75)
+            sanity.increase(0.75)
 
         player.draw(cameraSurface)
         
@@ -209,33 +216,49 @@ def game(player,enemy,world,clock):
                 if event.key == pygame.K_e:
                     if world.check_for_locker(player.hitbox):
                         print("You can get in this locker!")
+                        
 
                 if event.key == pygame.K_SPACE: 
+                    angler.active = True
+                    angler.hitbox.x = -500
+                    angler.hitbox.y = 100
                     print('RUMBLING RUMBLING ITS COMING')
+                    print("SUMMON ANGLER")
                     shake_start = pygame.time.get_ticks()
                     shaking = True
+                    
                 if event.key == pygame.K_1:
-                    print("SUMMON ANGLER")
-                    angler.active = True
-                    angler.hitbox.x = 1
-                    angler.hitbox.y = 250
+                    print("uh ima be fr this does nothin")
+
 
                 if event.key == pygame.K_0:
-                    print("LIGHTS FLASH")
-                    flashStartTime = pygame.time.get_ticks()
+                    print("lights flash like jinglers")
+                    xLight.start_flash(duration=3000, interval=120)
                 if event.key == pygame.K_e:
                     if canEnterLocker:
                         sanity.reset()
                         player.hide()
+                        panick.start(duration=5100)
                     else:
                         player.leaveLocker()
-             
+                        panick.active = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_4:
+                        xLight.turn_off()
+
+                    if event.key == pygame.K_2:
+                        xLight.turn_on()
+ 
+                        
         shaking, offset_x , offset_y = checkShake(shaking, shake_start)
         
         screen.blit(cameraSurface, (0 + offset_x ,0 + offset_y))
-        
+        text.displayMessage(message="Facility Rooms", surface= screen)
         #light.flashLights(startTime=flashStartTime, screen= screen, surface= transparentSurface) 
-
+        xLight.update()
+        xLight.draw(screen=screen, surface= transparentSurface)
+        panick.update()
+        panick.draw(screen)
         screen.blit(points,(980,25))
         pygame.display.update() # update the screen
 

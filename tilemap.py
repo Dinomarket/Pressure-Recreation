@@ -39,6 +39,8 @@ class tiles():
                     elif obj.name == "mainDoor":
                         self.doors.append(rect)
                         print(self.doors)
+                    elif obj.name == "backDoor":
+                        self.backDoor.append(rect)
                     elif obj.name == "locker":
                         self.lockers.append(rect)
                         print(self.lockers)
