@@ -123,15 +123,21 @@ def summonAngler():
     global shaking,shake_start
     global activeNode
 
-    
+    print("mf am I gonna summon myself or what")
     angler.active = True
-    angler.hitbox.x = -500
+    if angler.direction == "back":
+        angler.hitbox.x = -500
+        
+    else:
+        angler.hitbox.x = 1500
+
     angler.hitbox.y = 100
     print('RUMBLING RUMBLING ITS COMING')
     print("SUMMON ANGLER")
     shake_start = pygame.time.get_ticks()
     shaking = True
     activeNode = False
+    print("twin, how is this possible")
     
 
 def anglerNode():
@@ -139,7 +145,10 @@ def anglerNode():
 
     activeNode = True
     Light.start_flash(duration=2000, interval=random.randint(100,120))
-    call_after_delay(summonAngler, random.randint(5000,8000))
+    print("do I work?")
+    angler.direction = random.choice(["back","front"])
+    call_after_delay(summonAngler, random.randint(3000,8000))
+    print("I WORK")
    
 
 
@@ -160,6 +169,7 @@ def game(player,enemy,world,clock):
 
     offset_x = 0
     offset_y = 0
+    text.start_message()
     while running:
  
         
@@ -210,6 +220,14 @@ def game(player,enemy,world,clock):
             player.hitbox.y = 350
             if random.randint(1,5) == 1 and Score > 3000 and activeNode == False:
                 anglerNode()
+                text.start_message()
+                text.mail = "An impending doom approaches..."
+            if random.randint(1,5) == 2 and Score > 3000:
+                wallDweller.alive = True
+                wallDweller.x = -500
+                wallDweller.y = 1
+                wallDweller.hitbox.x = wallDweller.x
+                wallDweller.hitbox.y = wallDweller.y
             
 
 
@@ -225,7 +243,7 @@ def game(player,enemy,world,clock):
         player.draw(cameraSurface)
         
         angler.draw(cameraSurface)
-
+        update_delayed_calls()
         if wallDweller.alive:
             wallDweller.draw(cameraSurface)
 
@@ -242,15 +260,23 @@ def game(player,enemy,world,clock):
 
                 if event.key == pygame.K_SPACE: 
                     angler.active = True
-                    angler.hitbox.x = -500
+                    angler.hitbox.x = 1500
                     angler.hitbox.y = 100
+                    angler.direction = "front"
                     print('RUMBLING RUMBLING ITS COMING')
                     print("SUMMON ANGLER")
                     shake_start = pygame.time.get_ticks()
                     shaking = True
                     
                 if event.key == pygame.K_1:
-                    print("uh ima be fr this does nothin")
+                    print("I do stuff now ????")
+                    text.start_message()
+                    text.mail = "peanut butter jelly time!"
+                    wallDweller.alive = True
+                    wallDweller.x = -700
+                    wallDweller.y = 1
+                    wallDweller.hitbox.x = wallDweller.x
+                    wallDweller.hitbox.y = wallDweller.y
 
 
                 if event.key == pygame.K_0:
@@ -275,18 +301,19 @@ def game(player,enemy,world,clock):
         shaking, offset_x , offset_y = checkShake(shaking, shake_start)
         
         screen.blit(cameraSurface, (0 + offset_x ,0 + offset_y))
-        text.displayMessage(message="Say wallahi ", surface= screen)
+        text.displayMessage(surface= screen)
         #light.flashLights(startTime=flashStartTime, screen= screen, surface= transparentSurface) 
         Light.update()
         Light.draw(screen=screen, surface= transparentSurface)
         panick.update()
         panick.draw(screen)
-        screen.blit(points,(960,25))
+        screen.blit(points,(920,25))
         pygame.display.update() # update the screen
 
         clock.tick(20)
 
 def dead():
+
     background = pygame.image.load(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','ashesToAshes.jpg'))
     running = True
     while running:
@@ -297,7 +324,7 @@ def dead():
                 running = False
         screen.fill((255,255,255))
         screen.blit(background,(0,0))
-       
+
         
         
 
@@ -308,6 +335,42 @@ def dead():
 
         clock.tick(20)
 
+
+def anglerDeathScreen():
+    background = pygame.image.load(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','anglerEnd.png'))
+    running = True
+    shake_start = pygame.time.get_ticks()
+    shaking = True
+    offset_x = 0
+    offset_y = 0
+
+    while running:
+        game_surface = pygame.Surface(screen.get_size())
+        game_surface.fill((255,255,255))
+        game_surface.blit(background,(0,0))
+        
+        # handle every event since the last frame.
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit() # quit the screen
+                running = False
+
+        if angler.scale > 1.15:
+            return
+        print(angler.scale)
+        angler.enlarge(dt = clock.tick(60)/1000)
+        angler.deathByAngler(screen=game_surface)
+        
+        
+        shaking, offset_x , offset_y = checkShake(shaking, shake_start)
+ 
+        print(offset_x,offset_y)
+        screen.blit(game_surface, (0 + offset_x ,0 + offset_y))
+        pygame.display.update() # update the screen
+        clock.tick(20)
+
+
+
 def navigation(page):
 
     if page == "main":
@@ -315,7 +378,7 @@ def navigation(page):
         page = game(player,wallDweller,world,clock)
     if page == "dead":
         print("LOL ur dead")
+        page = anglerDeathScreen()
         fadeout()
-        page = dead()
 
 navigation(page="main")

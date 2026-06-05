@@ -13,10 +13,11 @@ class Dweller(object):
         self.image = pygame.image.load(enemy_img_path)
         self.x = 1
         self.y = 1
-        self.speed = 15
+        self.speed = 30
         self.hitbox = pygame.Rect(self.x, self.y, 225, 225)
         self.image = pygame.transform.scale(self.image, (75,225))
-        self.alive = True
+        self.alive = False
+        
         
 
     def move_towards_player(self, player):
@@ -81,14 +82,18 @@ class Angler(object):
         self.active = False
         self.scale = 1.0
         self.cap = 5.0
+        self.direction = "back"
       
 
     def rushPath(self):
-        self.hitbox.x += self.speed
+        if self.direction == "back":
+            self.hitbox.x += self.speed
+        elif self.direction == "front":
+            self.hitbox.x -= self.speed
 
 
     def enlarge(self, dt):
-        self.scale += self.scale * 1.1 * dt if self.scale < self.cap else self.scale == 2.0
+        self.scale += 0.5 * dt 
 
         width = int(self.image.get_width() * self.scale)
         height = int(self.image.get_height() * self.scale)
@@ -114,5 +119,5 @@ class Angler(object):
             surface.blit(self.image, (self.hitbox.x,self.hitbox.y))
 
     def deathByAngler(self, screen):
-        rect = self.image.get_rect(center=(450, 100))
+        rect = self.image.get_rect(center=(550, 200))
         screen.blit(self.image, rect)
