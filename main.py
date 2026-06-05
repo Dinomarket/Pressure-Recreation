@@ -3,6 +3,7 @@ import os
 import pygame
 import random
 import math
+import time
 
 pygame.init()
 global screen
@@ -44,8 +45,8 @@ ORANGE = (255, 165, 0)
 panick = HeartbeatOverlay()
 
 #xTile = tiles()
-xLight = Lights()
-light = lights()
+Light = Lights()
+
 # create an instance
 wallDweller = Dweller()
 angler = Angler()
@@ -65,6 +66,9 @@ cameraSurface = pygame.Surface((1152,768))
 
 triggerTime = 0
 flashStartTime = 0
+delayed_calls = []
+
+activeNode = False
 
 def checkShake(shaking, shake_start):
     if shaking:
@@ -88,37 +92,54 @@ def cameraShake(start_time, duration=4000):
 
 
 
+def fadeout(speed=5):
+    global gameData
+    print('''
+Calling fadeout
+          ''')
+    fade_surface = pygame.Surface((screen.get_width(), screen.get_height()))
+    fade_surface.fill((0, 0, 0))  # Black color for fadeout
+    for alpha in range(0, 255, speed):
+        fade_surface.set_alpha(alpha)
+        screen.blit(fade_surface, (0, 0))
+        pygame.display.update()
+        pygame.time.delay(10)  # controls speed of fade
+
+
+
+def call_after_delay(func, delay_ms):
+    trigger_time = pygame.time.get_ticks() + delay_ms
+    delayed_calls.append((trigger_time, func))
+
+def update_delayed_calls():
+    now = pygame.time.get_ticks()
+    for call in delayed_calls[:]:
+        trigger_time, func = call
+        if now >= trigger_time:
+            func()
+            delayed_calls.remove(call)
+
+def summonAngler():
+    global shaking,shake_start
+    global activeNode
 
     
+    angler.active = True
+    angler.hitbox.x = -500
+    angler.hitbox.y = 100
+    print('RUMBLING RUMBLING ITS COMING')
+    print("SUMMON ANGLER")
+    shake_start = pygame.time.get_ticks()
+    shaking = True
+    activeNode = False
+    
 
-def spawnNode():
-    print("spawning angler")
-    anglerSpawnTime = pygame.time.get_ticks()
-    anglerSpawn = True
-    return anglerSpawn,anglerSpawnTime
+def anglerNode():
+    global activeNode
 
-
-
-
-def anglerNode(currentTime):
-    global flashOn, lightsOn, flashStart, triggerTime
-
-    lightsOn = False
-    flashOn = True
-
-    # set trigger time once
-    if triggerTime is None:
-        triggerTime = currentTime + random.randint(2000, 4000)
-
-    # check if time has passed
-    if pygame.time.get_ticks() >= triggerTime:
-        print("Something's coming")
-        shaking = True
-      
-        return shaking
-    else:
-        return False
-
+    activeNode = True
+    Light.start_flash(duration=2000, interval=random.randint(100,120))
+    call_after_delay(summonAngler, random.randint(5000,8000))
    
 
 
@@ -179,17 +200,18 @@ def game(player,enemy,world,clock):
         
         if world.check_doors(player.hitbox):
             print("We outta here!")
-            Score += 1
+            fadeout(12)
+            Score += 1000
             points = font.render(f"Score: {Score}",False,WHITE)
             world = tiles(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps','generalHall.tmx'))
             player.x = 50
             player.y = 350  
             player.hitbox.x = 50
             player.hitbox.y = 350
+            if random.randint(1,5) == 1 and Score > 3000 and activeNode == False:
+                anglerNode()
             
 
-        if anglerSpawn == True:
-            shaking = anglerNode(spawnTime)
 
         if not player.visible:
             sanity.decrease(1)
@@ -233,7 +255,7 @@ def game(player,enemy,world,clock):
 
                 if event.key == pygame.K_0:
                     print("lights flash like jinglers")
-                    xLight.start_flash(duration=3000, interval=120)
+                    Light.start_flash(duration=3000, interval=120)
                 if event.key == pygame.K_e:
                     if canEnterLocker:
                         sanity.reset()
@@ -244,22 +266,22 @@ def game(player,enemy,world,clock):
                         panick.active = False
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_4:
-                        xLight.turn_off()
+                        Light.turn_off()
 
                     if event.key == pygame.K_2:
-                        xLight.turn_on()
+                        Light.turn_on()
  
                         
         shaking, offset_x , offset_y = checkShake(shaking, shake_start)
         
         screen.blit(cameraSurface, (0 + offset_x ,0 + offset_y))
-        text.displayMessage(message="Facility Rooms", surface= screen)
+        text.displayMessage(message="Say wallahi ", surface= screen)
         #light.flashLights(startTime=flashStartTime, screen= screen, surface= transparentSurface) 
-        xLight.update()
-        xLight.draw(screen=screen, surface= transparentSurface)
+        Light.update()
+        Light.draw(screen=screen, surface= transparentSurface)
         panick.update()
         panick.draw(screen)
-        screen.blit(points,(980,25))
+        screen.blit(points,(960,25))
         pygame.display.update() # update the screen
 
         clock.tick(20)
@@ -275,6 +297,9 @@ def dead():
                 running = False
         screen.fill((255,255,255))
         screen.blit(background,(0,0))
+       
+        
+        
 
 
  
@@ -290,6 +315,7 @@ def navigation(page):
         page = game(player,wallDweller,world,clock)
     if page == "dead":
         print("LOL ur dead")
+        fadeout()
         page = dead()
 
 navigation(page="main")

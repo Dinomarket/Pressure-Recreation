@@ -79,15 +79,32 @@ class Angler(object):
         self.hitbox = pygame.Rect(1, 250, 500, 500)
         self.image = pygame.transform.scale(self.image, (500, 500))
         self.active = False
+        self.scale = 1.0
+        self.cap = 5.0
+      
 
     def rushPath(self):
         self.hitbox.x += self.speed
+
+
+    def enlarge(self, dt):
+        self.scale += self.scale * 1.1 * dt if self.scale < self.cap else self.scale == 2.0
+
+        width = int(self.image.get_width() * self.scale)
+        height = int(self.image.get_height() * self.scale)
+
+        self.image = pygame.transform.scale(
+            self.image,
+            (width, height)
+        )
 
     def check_collision(self,player):
         if self.hitbox.colliderect(player.hitbox) and self.active == True:
             print("Why yall touching???")
             dead = True
             return dead
+        
+    
 
     def draw(self, surface):
         """ Draw on surface """
@@ -96,3 +113,6 @@ class Angler(object):
 
             surface.blit(self.image, (self.hitbox.x,self.hitbox.y))
 
+    def deathByAngler(self, screen):
+        rect = self.image.get_rect(center=(450, 100))
+        screen.blit(self.image, rect)
