@@ -11,7 +11,7 @@ screen = pygame.display.set_mode((1152, 768))
 
 from player import Player
 from dialogue import message
-from opponent import Dweller, Angler
+from opponent import Dweller, Angler, Pinky
 from tilemap import tiles
 from overlay import HeartbeatOverlay
 from sanityBar import sanity_bar
@@ -49,6 +49,7 @@ Light = Lights()
 
 # create an instance
 wallDweller = Dweller()
+pinky = Pinky()
 angler = Angler()
 clock = pygame.time.Clock()
 #world = TileMap(os.path.join("assets", "maps", "startMap.tmj"))
@@ -119,6 +120,8 @@ def update_delayed_calls():
             func()
             delayed_calls.remove(call)
 
+
+
 def summonAngler():
     global shaking,shake_start
     global activeNode
@@ -138,6 +141,23 @@ def summonAngler():
     shaking = True
     activeNode = False
     print("twin, how is this possible")
+
+def summonPinky():
+    global shaking,shake_start
+    global activeNode
+
+    pinky.active = True
+
+    pinky.hitbox.x = -500
+        
+
+    pinky.hitbox.y = 100
+
+    print("SUMMON PINKY")
+    shake_start = pygame.time.get_ticks()
+    shaking = True
+    activeNode = False
+    print("twin, how is this possible")  
     
 
 def anglerNode():
@@ -145,12 +165,37 @@ def anglerNode():
 
     activeNode = True
     Light.start_flash(duration=2000, interval=random.randint(100,120))
-    print("do I work?")
     angler.direction = random.choice(["back","front"])
     call_after_delay(summonAngler, random.randint(3000,8000))
-    print("I WORK")
-   
+    
+def pinkyNode():
+    global activeNode
 
+    activeNode = True
+    sanity.points = 0 
+
+    call_after_delay(summonPinky, random.randint(7000,12000))
+    
+   
+def randomEvents(Score):
+    node = random.randint(1,100)
+    print(node)
+    if node <= 20 and Score > 3000 and activeNode == False:
+        anglerNode()
+        text.start_message()
+        text.mail = "An impending doom approaches..."
+    
+    elif node >= 20 and node <= 35 and Score > 3000 and activeNode == False:
+        pinkyNode()
+        text.start_message()
+        text.mail = "Whats that noise?"
+    
+    if random.randint(1,5) == 2 and Score > 3000 and player.hitbox.x > 300:
+        wallDweller.alive = True
+        wallDweller.x = -50
+        wallDweller.y = 1
+        wallDweller.hitbox.x = wallDweller.x
+        wallDweller.hitbox.y = wallDweller.y
 
 def game(player,enemy,world,clock):
 
@@ -184,6 +229,7 @@ def game(player,enemy,world,clock):
 
         player.handle_keys() # handle the keys
         angler.rushPath()
+        pinky.rushPath()
         
         # fill the screen with white
         if wallDweller.alive == True:
@@ -195,6 +241,9 @@ def game(player,enemy,world,clock):
         
         if angler.check_collision(player= player):
             print("ur dead gng")
+            return "dead"
+        if pinky.check_collision(player= player):
+            print("ur dead sonion")
             return "dead"
 
         if world.is_blocked(player.hitbox):
@@ -218,16 +267,7 @@ def game(player,enemy,world,clock):
             player.y = 350  
             player.hitbox.x = 50
             player.hitbox.y = 350
-            if random.randint(1,5) == 1 and Score > 3000 and activeNode == False:
-                anglerNode()
-                text.start_message()
-                text.mail = "An impending doom approaches..."
-            if random.randint(1,5) == 2 and Score > 3000:
-                wallDweller.alive = True
-                wallDweller.x = -500
-                wallDweller.y = 1
-                wallDweller.hitbox.x = wallDweller.x
-                wallDweller.hitbox.y = wallDweller.y
+            randomEvents(Score)
             
 
 
@@ -241,7 +281,7 @@ def game(player,enemy,world,clock):
             sanity.increase(0.75)
 
         player.draw(cameraSurface)
-        
+        pinky.draw(cameraSurface)
         angler.draw(cameraSurface)
         update_delayed_calls()
         if wallDweller.alive:
@@ -259,12 +299,12 @@ def game(player,enemy,world,clock):
                         
 
                 if event.key == pygame.K_SPACE: 
-                    angler.active = True
-                    angler.hitbox.x = 1500
-                    angler.hitbox.y = 100
-                    angler.direction = "front"
+                    pinky.active = True
+                    pinky.hitbox.x = -500
+                    pinky.hitbox.y = 100
+                    
                     print('RUMBLING RUMBLING ITS COMING')
-                    print("SUMMON ANGLER")
+                    print("SUMMON PINKIES")
                     shake_start = pygame.time.get_ticks()
                     shaking = True
                     
