@@ -7,13 +7,14 @@ import os
 
 enemy_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','sogger.jpg')
 angler_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','angler1.png')
+pinky_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','pinky.png')
 
 class Dweller(object):
     def __init__(self):
         self.image = pygame.image.load(enemy_img_path)
         self.x = 1
         self.y = 1
-        self.speed = 30
+        self.speed = 50
         self.hitbox = pygame.Rect(self.x, self.y, 225, 225)
         self.image = pygame.transform.scale(self.image, (75,225))
         self.alive = False
@@ -91,7 +92,6 @@ class Angler(object):
         elif self.direction == "front":
             self.hitbox.x -= self.speed
 
-
     def enlarge(self, dt):
         self.scale += 0.5 * dt 
 
@@ -108,8 +108,6 @@ class Angler(object):
             print("Why yall touching???")
             dead = True
             return dead
-        
-    
 
     def draw(self, surface):
         """ Draw on surface """
@@ -121,3 +119,13 @@ class Angler(object):
     def deathByAngler(self, screen):
         rect = self.image.get_rect(center=(550, 200))
         screen.blit(self.image, rect)
+
+
+class Pinky(Angler):
+    def __init__(self):
+        super().__init__()
+        self.speed = 70
+        self.image = pygame.image.load(pinky_img_path)
+        self.image = pygame.transform.scale(self.image, (500, 500))
+
+    
