@@ -11,12 +11,12 @@ screen = pygame.display.set_mode((1152, 768))
 
 from player import Player
 from dialogue import message
-from opponent import Dweller, Angler, Pinky
-from tilemap import tiles
+from opponent import Dweller, Angler, Pinky, Blitz,Frogger,Chainsmoker
+from tilemap import tiles, MapManager
 from overlay import HeartbeatOverlay
 from sanityBar import sanity_bar
 from lights import lights, Lights
-
+from mapStorage import maps
 
 #Colors & Fonts 
 BLACK   = (0, 0, 0)
@@ -49,18 +49,23 @@ Light = Lights()
 
 # create an instance
 wallDweller = Dweller()
+frogger = Frogger()
+blitz = Blitz()
 pinky = Pinky()
 angler = Angler()
+chainsmoker = Chainsmoker()
 clock = pygame.time.Clock()
 #world = TileMap(os.path.join("assets", "maps", "startMap.tmj"))
 world = tiles(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps','generalHall.tmx'))
 sanity = sanity_bar()
 text = message()
 player = Player() 
+mapLoader = MapManager()
 #print("tile layers:",xTile.mapData.visible_layers)
 
 transparentSurface = pygame.Surface((1152, 768), pygame.SRCALPHA)
-font = pygame.font.Font(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images',"Pokemon Classic.ttf"), 20)
+#font = pygame.font.Font(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images',"Pokemon Classic.ttf"), 20)
+font = text.font
 basicFont = pygame.font.SysFont("arial",20)
 sanityPoints = 0
 cameraSurface = pygame.Surface((1152,768))
@@ -69,6 +74,7 @@ triggerTime = 0
 flashStartTime = 0
 delayed_calls = []
 
+deathAngler = None
 activeNode = False
 
 def checkShake(shaking, shake_start):
@@ -149,11 +155,62 @@ def summonPinky():
     pinky.active = True
 
     pinky.hitbox.x = -500
-        
-
     pinky.hitbox.y = 100
 
     print("SUMMON PINKY")
+    shake_start = pygame.time.get_ticks()
+    shaking = True
+    activeNode = False
+    print("twin, how is this possible")  
+    
+def summonChain():
+    global shaking,shake_start,shakeMagnitude
+    global activeNode
+
+    chainsmoker.active = True
+    shakeMagnitude = 20
+
+    chainsmoker.hitbox.x = -500
+    chainsmoker.hitbox.y = 100
+
+    print("SUMMON CHAINSMOKER")
+    shake_start = pygame.time.get_ticks()
+    shaking = True
+    activeNode = False
+    
+    print("twin, how is this possible")  
+
+def summonBlitz():
+    global shaking,shake_start
+    global activeNode
+
+    blitz.active = True
+
+    blitz.hitbox.x = -500
+    blitz.hitbox.y = 100
+
+    print("SUMMON BLITZ")
+    shake_start = pygame.time.get_ticks()
+    shaking = True
+    activeNode = False
+    print("twin, how is this possible")  
+    
+def summonFrogger():
+    global shaking,shake_start
+    global activeNode
+    if frogger.switchBack == 1 or frogger.switchBack == 3:
+        frogger.direction = "back"
+        frogger.hitbox.x = -500
+    else:
+        frogger.direction = "front"
+        frogger.hitbox.x = 1500
+    frogger.switchBack -= 1
+    frogger.active = True
+    print(frogger.direction)
+   
+    frogger.hitbox.y = 100
+
+    print("SUMMON FROGGER")
     shake_start = pygame.time.get_ticks()
     shaking = True
     activeNode = False
@@ -165,8 +222,10 @@ def anglerNode():
 
     activeNode = True
     Light.start_flash(duration=2000, interval=random.randint(100,120))
+    print("do I work?")
     angler.direction = random.choice(["back","front"])
     call_after_delay(summonAngler, random.randint(3000,8000))
+    angler.active = False
     
 def pinkyNode():
     global activeNode
@@ -175,22 +234,59 @@ def pinkyNode():
     sanity.points = 0 
 
     call_after_delay(summonPinky, random.randint(7000,12000))
-    
+    pinky.active = False
+
+def blitzNode():
+    global activeNode
+
+    activeNode = True
+    Light.start_flash(duration=4000, interval=random.randint(100,120))
+
+    call_after_delay(summonBlitz, random.randint(3000,8000))
+    blitz.active = False
    
+def froggerNode():
+    global activeNode
+    frogger.switchBack = 3
+    spawnTime = random.randint(3000,8000)
+    activeNode = True
+    Light.start_flash(duration=2000, interval=random.randint(100,120))
+
+
+    call_after_delay(summonFrogger, spawnTime)
+
+    call_after_delay(summonFrogger, spawnTime+ random.randint(3000,5000))
+
+    call_after_delay(summonFrogger, spawnTime+ random.randint(8000,12000))
+    frogger.active = False
+
+def chainNode():
+    global activeNode, shakeMagnitude
+    activeNode = True
+    Light.start_flash(duration=2000, interval=random.randint(100,120))
+    
+    call_after_delay(summonChain, random.randint(7000,12000))
+    shakeMagnitude = 10
+    chainsmoker.active = False
+    print("chainsmoker is false gng I repeat he is false",chainsmoker)
+
 def randomEvents(Score):
     node = random.randint(1,100)
     print(node)
-    if node <= 20 and Score > 3000 and activeNode == False:
-        anglerNode()
-        text.start_message()
-        text.mail = "An impending doom approaches..."
+    if Score > 2000 and activeNode == False:
+        if node <= 20:
+            anglerNode()
+        elif node >= 21 and node <= 28:
+            pinkyNode()
+        elif node >= 29 and node <= 36:
+            blitzNode()
+        elif node >= 37 and node <= 44:
+            froggerNode()
+        elif node >= 45 and node <= 90:
+            chainNode()
     
-    elif node >= 20 and node <= 35 and Score > 3000 and activeNode == False:
-        pinkyNode()
-        text.start_message()
-        text.mail = "Whats that noise?"
-    
-    if random.randint(1,5) == 2 and Score > 3000 and player.hitbox.x > 300:
+    if random.randint(1,5) == 2 and Score > 3000 and player.x > 300:
+        print("player.x", player.x)
         wallDweller.alive = True
         wallDweller.x = -50
         wallDweller.y = 1
@@ -203,6 +299,8 @@ def game(player,enemy,world,clock):
     global canEnterLocker
     global shakeMagnitude
     global spawnTime, anglerSpawn
+    global deathAngler
+    global Score
     Score = 0
     points = font.render(f"Score: {Score}",False,WHITE)
     running = True
@@ -230,21 +328,45 @@ def game(player,enemy,world,clock):
         player.handle_keys() # handle the keys
         angler.rushPath()
         pinky.rushPath()
+        blitz.rushPath()
+        frogger.rushPath()
+        chainsmoker.rushPath()
         
         # fill the screen with white
         if wallDweller.alive == True:
             wallDweller.move_towards_player(player=player)
         
-        if wallDweller.check_collision(player=player):
+
+        if wallDweller.check_collision(player=player) or world.check_for_death(player.hitbox):
             print("slimed")
-            return "dead"
-        
+            fadeout(2)
+            return "deadByDweller"
         if angler.check_collision(player= player):
             print("ur dead gng")
-            return "dead"
-        if pinky.check_collision(player= player):
+            deathAngler = angler
+            return "deadByAngler"
+        elif pinky.check_collision(player= player):
             print("ur dead sonion")
-            return "dead"
+            deathAngler = pinky
+            return "deadByAngler"
+        elif blitz.check_collision(player=player):
+            print("mmmmmm. Bro died")
+            deathAngler = blitz
+            return "deadByAngler"
+        elif frogger.check_collision(player=player):
+            print("aw helllllll nawwwww")
+            deathAngler = frogger
+            return "deadByAngler"
+        elif chainsmoker.check_collision(player=player):
+            print("tis unfortunate")
+            chainsmoker.active = False
+            world = tiles(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps','chainsmokerDeath.tmx'))
+            player.x = 500
+            player.y = 500
+            player.hitbox.x = 500
+            player.hitbox.y = 500
+        
+        
 
         if world.is_blocked(player.hitbox):
             print("You are hitting a wall!")
@@ -262,7 +384,9 @@ def game(player,enemy,world,clock):
             fadeout(12)
             Score += 1000
             points = font.render(f"Score: {Score}",False,WHITE)
-            world = tiles(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps','generalHall.tmx'))
+            
+ 
+            world = tiles(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps',mapLoader.loadNextMap(maps)))
             player.x = 50
             player.y = 350  
             player.hitbox.x = 50
@@ -273,7 +397,7 @@ def game(player,enemy,world,clock):
 
         if not player.visible:
             sanity.decrease(1)
-            
+
             if sanity.points == 0:
                 player.leaveLocker()
 
@@ -283,6 +407,10 @@ def game(player,enemy,world,clock):
         player.draw(cameraSurface)
         pinky.draw(cameraSurface)
         angler.draw(cameraSurface)
+        blitz.draw(cameraSurface)
+        frogger.draw(cameraSurface)
+        chainsmoker.draw(cameraSurface)
+
         update_delayed_calls()
         if wallDweller.alive:
             wallDweller.draw(cameraSurface)
@@ -299,14 +427,15 @@ def game(player,enemy,world,clock):
                         
 
                 if event.key == pygame.K_SPACE: 
-                    pinky.active = True
-                    pinky.hitbox.x = -500
-                    pinky.hitbox.y = 100
+                    chainsmoker.active = True
+                    chainsmoker.hitbox.x = -500
+                    chainsmoker.hitbox.y = 100
                     
                     print('RUMBLING RUMBLING ITS COMING')
-                    print("SUMMON PINKIES")
+                    print("SUMMON CHAINSMOKER")
                     shake_start = pygame.time.get_ticks()
                     shaking = True
+      
                     
                 if event.key == pygame.K_1:
                     print("I do stuff now ????")
@@ -356,8 +485,11 @@ def dead():
 
     background = pygame.image.load(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','ashesToAshes.jpg'))
     running = True
+    text.start_message()
+    text.mail = f"you died sonion now you gotta see your score: {Score}"
     while running:
         # handle every event since the last frame.
+        text.displayMessage(surface = screen,color= (0,0,0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit() # quit the screen
@@ -376,7 +508,8 @@ def dead():
         clock.tick(20)
 
 
-def anglerDeathScreen():
+def deathScreen():
+    global deathAngler
     background = pygame.image.load(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','anglerEnd.png'))
     running = True
     shake_start = pygame.time.get_ticks()
@@ -395,11 +528,12 @@ def anglerDeathScreen():
                 pygame.quit() # quit the screen
                 running = False
 
-        if angler.scale > 1.15:
-            return
-        print(angler.scale)
-        angler.enlarge(dt = clock.tick(60)/1000)
-        angler.deathByAngler(screen=game_surface)
+        if deathAngler.scale > 1.15:
+            fadeout()
+            return "deadByDweller"
+        print(deathAngler.scale)
+        deathAngler.enlarge(dt = clock.tick(60)/1000)
+        deathAngler.deathByAngler(screen=game_surface)
         
         
         shaking, offset_x , offset_y = checkShake(shaking, shake_start)
@@ -416,9 +550,12 @@ def navigation(page):
     if page == "main":
         print("Starting screen or main screen idk")
         page = game(player,wallDweller,world,clock)
-    if page == "dead":
+    if page == "deadByAngler":
         print("LOL ur dead")
-        page = anglerDeathScreen()
-        fadeout()
+        page = deathScreen()
+        
+    if page == "deadByDweller":
+        print("hn")
+        page = dead()
 
 navigation(page="main")

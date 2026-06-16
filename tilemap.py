@@ -2,16 +2,42 @@
 import pygame
 import os
 import pytmx
+import random
 from pytmx.util_pygame import load_pygame
 
 
 path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps')
 
-maps = {
-    "general":{"startMap":"startMap.tmx",
-                "room1":"level2testMap.tmx"}
-}
 
+class MapManager():
+    def __init__(self):
+        self.roomType = "general"
+        self.index = 0
+        self.orderOfMaps = ["generalHall.tmx","generalHall.tmx","generalHall.tmx","generalHall.tmx"]
+	
+    
+    def loadNextMap(self,maps):
+        currentMap = self.orderOfMaps[self.index]
+
+        # Move index forward
+        print("index:",self.index)
+        self.index += 1
+        print(self.orderOfMaps)
+        print(currentMap)
+        # If we've reached the end of this room type
+        if self.index >= len(self.orderOfMaps):
+            if self.roomType == "general":
+                self.roomType = random.choice(["ridge", "trenchTunnel","general"])
+            else:
+                self.roomType = "general"
+
+            self.orderOfMaps = maps[self.roomType]
+            print("How did we get here?")
+            self.index = 0
+
+        print(f"Loaded: {currentMap}")
+        return currentMap
+    
 class tiles():
     def __init__(self,path):
         self.mapData = load_pygame(path)
@@ -19,7 +45,8 @@ class tiles():
         self.lockers = []
         self.doors = []
         self.backDoor = []
-        self.order = ["startMap","room1","room2"]
+        self.death = []
+
         for layer in self.mapData.visible_layers:
             if isinstance(layer, pytmx.TiledObjectGroup):
                 for obj in layer:
@@ -44,9 +71,8 @@ class tiles():
                     elif obj.name == "locker":
                         self.lockers.append(rect)
                         print(self.lockers)
-
-
-        
+                    elif obj.name == "death":
+                        self.death.append(rect)
 
 
 
@@ -82,11 +108,10 @@ class tiles():
                 return True
         return False
     
-    def saveRoomOrder(self):
-        if len(self.order) > 3:
-            del self.order[0]
+    def check_for_death(self,rect):
+        for death in self.death:
+            if rect.colliderect(death):
+                return True
+        return False
 
 
-
-
-	

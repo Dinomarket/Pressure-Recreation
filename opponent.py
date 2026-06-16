@@ -8,7 +8,9 @@ import os
 enemy_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','sogger.jpg')
 angler_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','angler1.png')
 pinky_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','pinky.png')
-
+blitz_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','blitz.png')
+frogger_img_path =os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','frogger.png')
+chainSmoker_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','chainSmoker.png')
 class Dweller(object):
     def __init__(self):
         self.image = pygame.image.load(enemy_img_path)
@@ -128,4 +130,45 @@ class Pinky(Angler):
         self.image = pygame.image.load(pinky_img_path)
         self.image = pygame.transform.scale(self.image, (500, 500))
 
+    def deathByPinky(self, screen):
+        rect = self.image.get_rect(center=(550, 200))
+        screen.blit(self.image, rect)
+
+class Blitz(Angler):
+    def __init__(self):
+        super().__init__()
+        self.speed = 160
+        self.image = pygame.image.load(blitz_img_path)
+        self.image = pygame.transform.scale(self.image, (320, 600))
+
+    def deathByBlitz(self, screen):
+        rect = self.image.get_rect(center=(550, 200))
+        screen.blit(self.image, rect)    
+
+
+class Frogger(Angler):
+    def __init__(self):
+        super().__init__()
+        self.speed = 60
+        self.image = pygame.image.load(frogger_img_path)
+        self.image = pygame.transform.scale(self.image, (365, 507))
+        self.switchBack = 3
+
+    def deathByFrogger(self, screen):
+        rect = self.image.get_rect(center=(550, 200))
+        screen.blit(self.image, rect)    
+
+
+    def switchUp(self):
+        if self.x >= 900:
+            self.direction = "front"
+        elif self.x <= -900:
+            self.direction = "back"
+
+class Chainsmoker(Angler):
+    def __init__(self):
+        super().__init__()
+        self.speed = 30
+        self.image = pygame.image.load(chainSmoker_img_path)
+        self.image = pygame.transform.scale(self.image, (600,600))
     

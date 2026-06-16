@@ -2,22 +2,25 @@ import os
 import pygame
 
 
-img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','player.png')
+imgFront_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','playerFront.png')
+imgBack_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','playerBack.png')
+imgLeft_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','playerLeft.png')
+imgRight_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','playerRight.png')
 
 class Player(object): 
     def __init__(self):
         """ The constructor of the class """
-        self.image = pygame.image.load(img_path)
-        self.image = pygame.transform.scale(self.image, (96, 96))
+        self.image = pygame.image.load(imgFront_path)
+        self.image = pygame.transform.scale(self.image, (90, 140))
         self.x = 500
         self.y = 500
         self.oldY = self.y
         self.oldX = self.x
-        self.hitbox = pygame.Rect(self.x, self.y, 96, 96)
+        self.hitbox = pygame.Rect(self.x, self.y, 90, 140)
         self.view_hitbox = pygame.Rect(self.x, self.y , 300, 150)
         self.visible = True
         
-    def handle_keys(self, dist = 12):
+    def handle_keys(self, dist = 12):#og dist is 12
         """ Handles Keys """
         if self.visible == True:
             key = pygame.key.get_pressed()
@@ -26,18 +29,26 @@ class Player(object):
             # distance moved in 5 frames
             if key[pygame.K_a]:
                 self.x -= dist
+                self.image = pygame.image.load(imgLeft_path)
+                self.image = pygame.transform.scale(self.image, (90, 140))
+
                 self.view_hitbox = pygame.Rect(self.x - 240, self.y , 300, 70)
             if key[pygame.K_d]:
                 self.x += dist
+                self.image = pygame.image.load(imgRight_path)
+                self.image = pygame.transform.scale(self.image, (90, 140))
                 self.view_hitbox = pygame.Rect(self.x + 40, self.y, 300, 70)
             if key[pygame.K_w]:
                 self.y -= dist
+                self.image = pygame.image.load(imgBack_path)
+                self.image = pygame.transform.scale(self.image, (90, 140))
                 self.view_hitbox = pygame.Rect(self.x, self.y- 240, 70, 300)
             if key[pygame.K_s]:
                 self.y += dist
+                self.image = pygame.image.load(imgFront_path)
+                self.image = pygame.transform.scale(self.image, (90, 140))
                 self.view_hitbox = pygame.Rect(self.x, self.y+ 40, 70, 300)
-            if key[pygame.K_e]:
-                print("you pressed e!")
+       
 
             self.hitbox.x = self.x
             self.hitbox.y = self.y
@@ -79,7 +90,7 @@ class Player(object):
         """ Draw on surface """
         # blit yourself at your current position
 
-        pygame.draw.rect(surface,(255, 0, 0), self.hitbox)
+
         surface.blit(self.image, (self.hitbox.x, self.hitbox.y))
         
     

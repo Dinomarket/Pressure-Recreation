@@ -18,7 +18,7 @@ class message:
         self.mail = "Smit Pressure By Sean Kim"
 
 
-    def displayMessage(self, surface):
+    def displayMessage(self, surface, color = WHITE):
         if not self.active:
             return
 
@@ -35,7 +35,7 @@ class message:
 
         visible_text = self.mail[:self.char_index]
 
-        text_surface = self.font.render(visible_text, True, (255, 255, 255))
+        text_surface = self.font.render(visible_text, True, color)
         text_rect = text_surface.get_rect(center=message_box.center)
 
         surface.blit(text_surface, text_rect)
