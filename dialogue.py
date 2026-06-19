@@ -1,7 +1,7 @@
 import pygame
 import os
 WHITE   = (255, 255, 255)
-message_box = pygame.Rect(375, 150, 400, 100)
+message_box = pygame.Rect(375, 350, 400, 100)
 
 class message:
     def __init__(self):

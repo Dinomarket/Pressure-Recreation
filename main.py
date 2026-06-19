@@ -488,8 +488,13 @@ def dead():
     running = True
     text.start_message()
     text.mail = f"Final Score: {Score}"
+    homeScreenTitle = font.render("You died!",True, BLACK)
+    text_rect = homeScreenTitle.get_rect(center=(1152/2, 768/3))
     while running:
         # handle every event since the last frame.
+        
+        
+
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -497,6 +502,7 @@ def dead():
                 running = False
         screen.fill((255,255,255))
         screen.blit(background,(0,0))
+        screen.blit(homeScreenTitle,text_rect)
         text.displayMessage(surface = screen, color= (0,0,0))
         
         
