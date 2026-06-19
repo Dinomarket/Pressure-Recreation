@@ -1,11 +1,12 @@
 import os
 import pygame
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
-imgFront_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','playerFront.png')
-imgBack_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','playerBack.png')
-imgLeft_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','playerLeft.png')
-imgRight_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','playerRight.png')
+imgFront_path = os.path.join(dir_path,'assets','images','playerFront.png')
+imgBack_path = os.path.join(dir_path,'assets','images','playerBack.png')
+imgLeft_path = os.path.join(dir_path,'assets','images','playerLeft.png')
+imgRight_path = os.path.join(dir_path,'assets','images','playerRight.png')
 
 class Player(object): 
     def __init__(self):

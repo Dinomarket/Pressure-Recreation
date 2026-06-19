@@ -3,14 +3,15 @@ import math
 import pygame
 import os
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
-enemy_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','sogger.jpg')
-angler_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','angler1.png')
-pinky_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','pinky.png')
-blitz_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','blitz.png')
-frogger_img_path =os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','frogger.png')
-chainSmoker_img_path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','chainSmoker.png')
+enemy_img_path = os.path.join(dir_path,'assets','images','sogger.jpg')
+angler_img_path = os.path.join(dir_path,'assets','images','angler1.png')
+pinky_img_path = os.path.join(dir_path,'assets','images','pinky.png')
+blitz_img_path = os.path.join(dir_path,'assets','images','blitz.png')
+frogger_img_path =os.path.join(dir_path,'assets','images','frogger.png')
+chainSmoker_img_path = os.path.join(dir_path,'assets','images','chainSmoker.png')
 class Dweller(object):
     def __init__(self):
         self.image = pygame.image.load(enemy_img_path)
@@ -140,6 +141,7 @@ class Blitz(Angler):
         self.speed = 160
         self.image = pygame.image.load(blitz_img_path)
         self.image = pygame.transform.scale(self.image, (320, 600))
+        self.hitbox = pygame.Rect(1, 250, 320, 600)
 
     def deathByBlitz(self, screen):
         rect = self.image.get_rect(center=(550, 200))
@@ -153,6 +155,7 @@ class Frogger(Angler):
         self.image = pygame.image.load(frogger_img_path)
         self.image = pygame.transform.scale(self.image, (365, 507))
         self.switchBack = 3
+        self.hitbox = pygame.Rect(1, 250, 365, 500)
 
     def deathByFrogger(self, screen):
         rect = self.image.get_rect(center=(550, 200))
@@ -171,4 +174,5 @@ class Chainsmoker(Angler):
         self.speed = 30
         self.image = pygame.image.load(chainSmoker_img_path)
         self.image = pygame.transform.scale(self.image, (600,600))
+        self.hitbox = pygame.Rect(1, 250, 600, 600)
     

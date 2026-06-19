@@ -15,7 +15,7 @@ class message:
 
         self.start_time = 0
         self.active = False
-        self.mail = "Smit Pressure By Sean Kim"
+        self.mail = "Pressure By Sean Kim"
 
 
     def displayMessage(self, surface, color = WHITE):

@@ -40,7 +40,7 @@ ORANGE = (255, 165, 0)
 
 
 
-
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 panick = HeartbeatOverlay()
 
@@ -56,7 +56,7 @@ angler = Angler()
 chainsmoker = Chainsmoker()
 clock = pygame.time.Clock()
 #world = TileMap(os.path.join("assets", "maps", "startMap.tmj"))
-world = tiles(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps','generalHall.tmx'))
+world = tiles(os.path.join(dir_path,'assets','maps','generalHall.tmx'))
 sanity = sanity_bar()
 text = message()
 player = Player() 
@@ -223,8 +223,9 @@ def anglerNode():
     activeNode = True
     Light.start_flash(duration=2000, interval=random.randint(100,120))
     print("do I work?")
-    angler.direction = random.choice(["back","front"])
-    call_after_delay(summonAngler, random.randint(3000,8000))
+    #angler.direction = random.choice(["back","front"])
+    angler.direction = "back"
+    call_after_delay(summonAngler, random.randint(4000,8000))
     angler.active = False
     
 def pinkyNode():
@@ -242,13 +243,13 @@ def blitzNode():
     activeNode = True
     Light.start_flash(duration=4000, interval=random.randint(100,120))
 
-    call_after_delay(summonBlitz, random.randint(3000,8000))
+    call_after_delay(summonBlitz, random.randint(4500,7000))
     blitz.active = False
    
 def froggerNode():
     global activeNode
     frogger.switchBack = 3
-    spawnTime = random.randint(3000,8000)
+    spawnTime = random.randint(4000,8000)
     activeNode = True
     Light.start_flash(duration=2000, interval=random.randint(100,120))
 
@@ -282,7 +283,7 @@ def randomEvents(Score):
             blitzNode()
         elif node >= 37 and node <= 44:
             froggerNode()
-        elif node >= 45 and node <= 90:
+        elif node >= 45 and node <= 52:
             chainNode()
     
     if random.randint(1,5) == 2 and Score > 3000 and player.x > 300:
@@ -486,17 +487,17 @@ def dead():
     background = pygame.image.load(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','images','ashesToAshes.jpg'))
     running = True
     text.start_message()
-    text.mail = f"you died sonion now you gotta see your score: {Score}"
+    text.mail = f"Final Score: {Score}"
     while running:
         # handle every event since the last frame.
-        text.displayMessage(surface = screen,color= (0,0,0))
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit() # quit the screen
                 running = False
         screen.fill((255,255,255))
         screen.blit(background,(0,0))
-
+        text.displayMessage(surface = screen, color= (0,0,0))
         
         
 

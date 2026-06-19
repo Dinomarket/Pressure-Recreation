@@ -5,8 +5,8 @@ import pytmx
 import random
 from pytmx.util_pygame import load_pygame
 
-
-path = os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps')
+dir_path = os.path.dirname(os.path.realpath(__file__))
+path = os.path.join(dir_path,'assets','maps')
 
 
 class MapManager():
