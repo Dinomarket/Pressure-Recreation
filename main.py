@@ -146,7 +146,7 @@ def summonAngler():
     shake_start = pygame.time.get_ticks()
     shaking = True
     activeNode = False
-    print("twin, how is this possible")
+
 
 def summonPinky():
     global shaking,shake_start
@@ -214,8 +214,7 @@ def summonFrogger():
     shake_start = pygame.time.get_ticks()
     shaking = True
     activeNode = False
-    print("twin, how is this possible")  
-    
+
 
 def anglerNode():
     global activeNode
@@ -343,23 +342,23 @@ def game(player,enemy,world,clock):
             fadeout(2)
             return "deadByDweller"
         if angler.check_collision(player= player):
-            print("ur dead gng")
+           
             deathAngler = angler
             return "deadByAngler"
         elif pinky.check_collision(player= player):
-            print("ur dead sonion")
+        
             deathAngler = pinky
             return "deadByAngler"
         elif blitz.check_collision(player=player):
-            print("mmmmmm. Bro died")
+         
             deathAngler = blitz
             return "deadByAngler"
         elif frogger.check_collision(player=player):
-            print("aw helllllll nawwwww")
+          
             deathAngler = frogger
             return "deadByAngler"
         elif chainsmoker.check_collision(player=player):
-            print("tis unfortunate")
+           
             chainsmoker.active = False
             world = tiles(os.path.join('C:/Users/kinfo/OneDrive/Untitled Battle Game','assets','maps','chainsmokerDeath.tmx'))
             player.x = 500
@@ -432,7 +431,7 @@ def game(player,enemy,world,clock):
                     chainsmoker.hitbox.x = -500
                     chainsmoker.hitbox.y = 100
                     
-                    print('RUMBLING RUMBLING ITS COMING')
+                  
                     print("SUMMON CHAINSMOKER")
                     shake_start = pygame.time.get_ticks()
                     shaking = True
